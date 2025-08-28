@@ -1,0 +1,40 @@
+name: Deploy to Oracle Cloud Server
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Faz checkout do código
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      # 2. Configura chave SSH para conectar no servidor Oracle Cloud
+      - name: Configurar SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 3. Conectar via SSH e executar comandos no servidor remoto
+      - name: Deploy no Servidor Oracle Cloud
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /var/www/nodejs-app
+
+            # 4. Atualiza o código (git pull ou rsync, aqui vou usar git pull)
+            git pull origin main
+
+            # 5. Para containers antigos (se existirem)
+            docker compose down || true
+
+            # 6. Sobe novamente os containers
+            docker compose up -d --build
+          EOF
