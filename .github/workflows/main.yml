@@ -34,7 +34,7 @@ jobs:
       - name: Deploy no Servidor Oracle Cloud
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /caminho/do/seu/projeto
+            cd /home/node/app
 
             # Para containers antigos
             docker compose down || true
