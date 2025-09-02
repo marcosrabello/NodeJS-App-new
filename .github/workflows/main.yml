@@ -23,12 +23,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # 3. Envia os arquivos do projeto para o servidor via rsync
+      # 3. Envia os arquivos do projeto para o servidor via rsync  
       - name: Sincronizar arquivos com servidor
         run: |
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
-            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/node/app
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:"mkdir -p /home/node/app"
 
       # 4. Conectar no servidor e recriar containers
       - name: Deploy no Servidor Oracle Cloud
