@@ -23,18 +23,22 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # 3. Conectar via SSH e executar comandos no servidor remoto
+      # 3. Envia os arquivos do projeto para o servidor via rsync
+      - name: Sincronizar arquivos com servidor
+        run: |
+          rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/nodejs-app
+
+      # 4. Conectar no servidor e recriar containers
       - name: Deploy no Servidor Oracle Cloud
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /var/www/nodejs-app
+            cd /caminho/do/seu/projeto
 
-            # 4. Atualiza o código (git pull ou rsync, aqui vou usar git pull)
-            git pull origin main
-
-            # 5. Para containers antigos (se existirem)
+            # Para containers antigos
             docker compose down || true
 
-            # 6. Sobe novamente os containers
+            # Sobe novamente
             docker compose up -d --build
           EOF
