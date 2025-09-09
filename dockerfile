@@ -12,4 +12,4 @@ RUN npm install
 COPY . . 
 
 # Comando padrão para iniciar a aplicação
-CMD node index.js
+CMD ["node", "index.js"]
