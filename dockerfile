@@ -8,7 +8,7 @@ COPY package*.json ./
 # Instala dependências (inclui express do package.json)
 RUN npm install
 
-# Copia o restante do código
+# Copia o restante do código.
 COPY . . 
 
 # Comando padrão para iniciar a aplicação
